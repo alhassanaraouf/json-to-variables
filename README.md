@@ -9,7 +9,7 @@ This action reads json file and writes its content as environment variables with
 
 ### `prefix`
 
-The prefix. Default value `json`.
+The prefix. Default value ``.
 
 ### `masked`
 
@@ -40,7 +40,7 @@ Mask variables as secrets. Default value `false`.
   uses: rgarcia-phi/json-to-variables@v1.1.0
   with:
     filename: 'test.json'
-    prefix: test
+    prefix: ''
     masked: true
 - name: Show output
   run: echo "The time was ${{ env.test_value }}, ${{ env.test_array_0_value }}, ${{ env.test_obj_value1 }}"
