@@ -1,7 +1,7 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 333:
+/***/ 209:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -15,7 +15,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const os = __importStar(__nccwpck_require__(37));
-const utils_1 = __nccwpck_require__(903);
+const utils_1 = __nccwpck_require__(262);
 /**
  * Commands
  *
@@ -87,7 +87,7 @@ function escapeProperty(s) {
 
 /***/ }),
 
-/***/ 35:
+/***/ 695:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -109,9 +109,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const command_1 = __nccwpck_require__(333);
-const file_command_1 = __nccwpck_require__(458);
-const utils_1 = __nccwpck_require__(903);
+const command_1 = __nccwpck_require__(209);
+const file_command_1 = __nccwpck_require__(583);
+const utils_1 = __nccwpck_require__(262);
 const os = __importStar(__nccwpck_require__(37));
 const path = __importStar(__nccwpck_require__(17));
 /**
@@ -332,7 +332,7 @@ exports.getState = getState;
 
 /***/ }),
 
-/***/ 458:
+/***/ 583:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -350,7 +350,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const fs = __importStar(__nccwpck_require__(147));
 const os = __importStar(__nccwpck_require__(37));
-const utils_1 = __nccwpck_require__(903);
+const utils_1 = __nccwpck_require__(262);
 function issueCommand(command, message) {
     const filePath = process.env[`GITHUB_${command}`];
     if (!filePath) {
@@ -368,7 +368,7 @@ exports.issueCommand = issueCommand;
 
 /***/ }),
 
-/***/ 903:
+/***/ 262:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -461,11 +461,11 @@ var __webpack_exports__ = {};
 (() => {
 const fs = __nccwpck_require__(147);
 const path = __nccwpck_require__(17);
-const core = __nccwpck_require__(35);
+const core = __nccwpck_require__(695);
 
 try {
     const fileName = core.getInput('filename', { required: true });
-    const prefix = core.getInput('prefix') || 'json';
+    const prefix = core.getInput('prefix') || '';
     const masked = (core.getInput('masked') || 'false') === 'true';
 
     const fullPath = path.resolve(fileName);
@@ -486,8 +486,13 @@ try {
             });
         }
         else if (typeof variable === 'object') {
-            for (const field in variable) {
-                processVariable(variable[field], `${name}_${field}`);
+            for(const key in variable) {
+                if(rootObj.hasOwnProperty(key)){
+                    processVariable(variable[key], `key`);
+                }
+                else {
+                    processVariable(variable[key], `${name}_${key}`);
+                }
             }
         }
         else {
@@ -495,12 +500,12 @@ try {
                 core.setSecret(variable);
             }
 
-            core.info(`SET ENV '${name}' = ${variable}`);
+            core.info(`SET ENV '${prefix}${name}' = ${variable}`);
             core.exportVariable(name, variable.toString());
         }
     };
 
-    processVariable(rootObj, prefix);
+    processVariable(rootObj);
 
 } catch (error) {
     core.setFailed(error.message);
